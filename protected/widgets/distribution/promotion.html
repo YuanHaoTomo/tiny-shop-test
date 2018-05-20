@@ -1,0 +1,35 @@
+{echo:JS::import('dialog?skin=tinysimple');} {echo:JS::import('dialogtools');}
+<link href="{url:#css/product.css}" rel="stylesheet" type="text/css" />
+<link href="{url:#css/ucenter.css}" rel="stylesheet" type="text/css" />
+<div class="container list blank">
+    <div class="row-5">
+      <div class="col-1">
+        {widget:name=distribution action=menu}
+        </div>
+        <div class="col-4">
+            <h1 class="title">
+            <span>
+                我推广的商品：
+            </span>
+        </h1>
+            <div class="row">
+                    {query:name=widget_distributor_promotion as wdp join=left join goods as go on wdp.goods_id eq go.id where= go.is_online eq 0 and wdp.user_id eq $user[id] page=1 id=$obj}
+                    <div class="col-1">
+                        <div class="item">
+                            <div class="header">
+                                <a href="{url:/index/product/id/$item[id]/regcode/$distribution[code]}"><img src="{echo:Common::thumb($item['img'],220,220);}" width="220"></a>
+                            </div>
+                            <ul class="main">
+                            <li class="title"><a href="{url:/index/product/id/$item[id]/regcode/$distribution[code]}">{echo:TString::msubstr($item['name'],0,12)}</a></li>
+                            <li> {!$price=($item['sell_price'] - $item['cost_price'])}分销利润：<span class="price">{!=$price*$min/100}~{!=$price}{$currency_unit}</span></li>
+                            </ul>
+                            <div class="footer"><a href="{url:/distribution/promotion_del/goods_id/$item[id]}" class="btn btn-default">取消推广</a></div>
+                        </div>
+                    </div>
+                    {/list}
+
+            </div>
+            <div class="page-nav">{!=$obj->pagebar()}</div>
+        </div>
+    </div>
+</div>

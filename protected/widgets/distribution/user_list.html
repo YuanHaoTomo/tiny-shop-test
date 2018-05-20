@@ -1,0 +1,91 @@
+{echo:JS::import('dialog?skin=brief');}
+{echo:JS::import('dialogtools');}
+{echo:JS::import('form');}
+<form action="" method="post">
+<div class="tools_bar clearfix">
+    <a class="icon-checkbox-checked icon-checkbox-unchecked" href="javascript:;" onclick="tools_select('id[]',this)" title="全选" data="true"> 全选 </a>
+    <a class="icon-delicious" href="{url:/distribution/user_list}"> 全部用户</a>
+    <span class="fr"><a href='javascript:;' id="condition" class="icon-search" style="" > 筛选条件</a><input id="condition_input" type="hidden" name="condition" value="{$condition}"></span>
+</div>
+<table class="default" >
+    <tr>
+        <th style="width:30px">选择</th>
+        <th style="width:70px">操作</th>
+        <th style="">用户名</th>
+        <th style="width:100px">状态</th>
+        <th style="width:100px">等级</th>
+
+    </tr>
+    {query:name=grade /}
+    {set:$grade_name=array();}
+    {list:}
+        {set:$grade_name[$item['id']]=$item['name']}
+    {/list}
+    {!$config['category'][-1]='默认'}
+    {query:name=widget_distributor as wd,user as u fields=wd.*,u.name,u.email where=wd.user_id eq u.id and $where id=$obj page=1 desc }
+        <tr><td style="width:30px"><input type="checkbox" name="id[]" value="{$item['id']}"></td>
+        <td style="width:70px" class="btn_min"><div class="operat hidden"><a  class="icon-cog action" href="javascript:;"> 处理</a><div class="menu_select"><ul>
+            {if:$item['status']==0}
+                <li><a class="icon-tag" href="{url:/distribution/update_param/name/status/value/1/id/$item[id]}"> 通过审核</a></li>
+            {else:}
+            <li>
+                <a class="icon-tag" href="{url:/distribution/update_param/name/status/value/0/id/$item[id]}"> 取消通过</a>
+            </li>
+            {/if}
+                <li><a class="icon-star" href="javascript:balance_op({$item['id']},{$item['category']});"> 设置等级</a></li>
+            </ul></div></div> </td>
+        <td style="width:100px">{$item['name']}</td><td style="width:60px">{echo:$item['status']==0?"<span class='red'>未审核</span>":($item['status']==1?"<span class='green'>已审核</span>":"锁定");}</td>
+        <td style="width:80px">{$config['category'][$item['category']]}</td></tr>
+    {/query}
+</table>
+</form>
+<div class="page_nav">
+{echo:$obj->pageBar()}
+</div>
+
+
+<div id="balance_box" style="display: none;width:420px;padding: 5px;" class="box">
+    <div class="form2">
+        <form  id="export_form" action="{url:/distribution/update_param}" method="post" callback="create_voucher">
+          <input type="hidden" id="category_id" name="id" value="">
+          <input type="hidden" id="type" name="name" value="category">
+          <dl class="lineD">
+          <dt>分销商等级：</dt>
+          <dd><select name="value" id="category">{list:items=$config['category']}<option value="{$key}">{$item}</option>{/list}</select></dd>
+          </dl>
+        <div class="tc mt10"><button class="button" id="balance-btn">确定</button></div>
+        </form>
+    </div>
+</div>
+
+<script type="text/javascript">
+    function balance_op(id,value){
+        $("#category_id").val(id);
+        $("#category").attr("value",value);
+        var title = "等级设定";
+        art.dialog({id:'balance_op',lock:true,opacity:0.1,title:title,width:400,height:200,padding:"15px",content:document.getElementById("balance_box")});
+    }
+    function create_voucher(e){
+      if(e == null){
+        var fields = $("#export_form").serializeArray();
+        $.get("{url:/customer/balance_op}",fields,function(data){
+          if(data['status']=='success'){
+            art.dialog({id:'balance_op'}).close();
+            art.dialog.tips("<p class='"+data['status']+"'>"+data['msg']+"</p>",2);
+            setTimeout("tools_reload()",2000);
+          }else{
+            art.dialog.tips("<p class='"+data['status']+"'>"+data['msg']+"</p>");
+          }
+        },'json');
+      }
+      return false;
+    }
+</script>
+
+<script type="text/javascript">
+    var form =  new Form();
+    $("#condition").on("click",function(){
+    $("body").Condition({input:"#condition_input",okVal:'高级搜索',callback:function(data){tools_submit({action:'{url:/distribution/user_list}',method:'get'});},data:{'name':{name:'用户名'},email:{name:'邮箱'},mobile:{name:'手机号码'},reg_time:{name:'注册时间'}
+    }});
+    });
+</script>

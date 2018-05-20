@@ -1,0 +1,66 @@
+<link type="text/css" rel="stylesheet" href="{url:#css/ucenter.css}" />
+<div class="container list blank">
+    <div class="row-5">
+        <div class="col-1">
+            {widget:name=distribution action=menu}
+        </div>
+        <div class="col-4 ">
+            <h1 class="title"><span>申请成为分销商：</span></h1>
+            <div>
+                <form id="info-form" class="simple" action="{url:/distribution/apply_act}" method="post">
+                    <ul class="tiny-form">
+                        <li class="line caption">
+                            <h2 class="tc">成为分销商，开启赚钱之路。</h2>
+                        </li>
+                        <li class="line caption">
+                            <table class="table table-list" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th>分润级别</th>
+                                        <th>默认等级（%）</th>
+                                        {list:items=$config['category']}
+                                        <th><span>{$item}</span>分销商（%）</th>
+                                        {/list}
+                                    </tr>
+                                    <tr class="min_inputs">
+                                        <td width="60"> 一级分佣 </td>
+                                        {list:items=$config['level1']}
+                                        <td>
+                                            {$item}
+                                        </td>
+                                        {/list}
+                                    </tr>
+                                    <tr class="min_inputs">
+                                        <td> 二级分佣 </td>
+                                        {list:items=$config['level2']}
+                                        <td>
+                                            {$item}
+                                        </td>
+                                        {/list}
+                                    </tr>
+                                    <tr class="min_inputs">
+                                        <td> 三级分佣 </td>
+                                        {list:items=$config['level3']}
+                                        <td>
+                                            {$item}
+                                        </td>
+                                        {/list}
+                                    </tr>
+                                </thead>
+                            </table>
+                        </li>
+                        <li class="line tc">
+                            {if:isset($obj) && isset($obj['status']) && $obj['status'] == 0}
+                            <input type="submit" class="btn disabled" value="等待审核……"   disabled="disabled">{elseif:isset($msg)}
+                            <input type="submit" class="btn disabled" value="{$msg}"  disabled="disabled">
+                            {else:}
+                            <input type="submit" class="btn btn-main" value="申请"  >
+                            {/if}
+
+                        </li>
+                    </ul>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

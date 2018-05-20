@@ -1,0 +1,30 @@
+<link href="{url:#css/product.css}" rel="stylesheet" type="text/css" />
+<link href="{url:#css/ucenter.css}" rel="stylesheet" type="text/css" />
+<div class="container list blank">
+    <div class="row-5">
+        <div class="col-1">
+            {widget:name=distribution action=menu}
+        </div>
+        <div class="col-4">
+            <h1 class="title">
+            <span>
+                我的业绩：
+            </span>
+        </h1>
+            <table class="table table-list">
+                <tr>
+                    <td>佣金预收入：</td>
+                    <td class="red">{$pre_income}{$currency_unit}</td>
+                    <td>可提现佣金：</td>
+                    <td class="green">{$income}{$currency_unit}</td>
+                </tr>
+                <tr>
+                    <td>分销等级：</td>
+                    <td>{$category_name}</td>
+                    <td>三级内下线人数：</td>
+                    <td>{$users_num|0}人</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>

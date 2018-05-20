@@ -1,0 +1,34 @@
+{!$widgetpath = Tiny::app()->getBasePath().'widgets'}<br/>
+
+<table class="default">
+    <tr>
+        <th>插件名称</th><th>作者</th><th>版本号</th><th>开启与关闭</th><th>安装与卸载</th>
+    </tr>
+    <?php
+    $mydir = dir($widgetpath);
+    while($file = $mydir->read())
+    {
+        if((is_dir("$widgetpath/$file")) AND ($file!=".") AND ($file!=".."))
+        {
+            $installFile = "$widgetpath/$file/install.php";
+            $installLock = "$widgetpath/$file/install.lock";
+            $statusFile = "$widgetpath/$file/status.php";
+            $isInstall = false;
+            if(file_exists($installLock)){
+                $isInstall = true;
+            }
+
+            if(file_exists($installFile)){
+                $isOpen = true;
+                if(file_exists($statusFile)){
+                    $isOpen = include($statusFile);
+                }
+                $results = include($installFile);
+                echo "<tr><td>$results[name] </td><td>$results[author]</td><td>$results[version]</td><td>".($isOpen&&$isInstall?"已开启 <a class=\"red\" href=\"".Url::urlFormat('/plugin/close_widget/widget/'.$file)."\" >关闭</a>":"已关闭 <a  class=\"green\" href=\"".Url::urlFormat('/plugin/open_widget/widget/'.$file)."\">开启</a>")."</td><td>".($isInstall?"已安装 <a class=\"red\" href=\"".Url::urlFormat('/plugin/uninstall_widget/widget/'.$file)."\">卸载</a>":"未安装 <a class=\"green\" href=\"".Url::urlFormat('/plugin/install_widget/widget/'.$file)."\">安装</a>")."</td></tr>";
+            }
+        }
+
+    }
+    $mydir->close();
+?>
+</table>

@@ -1,0 +1,154 @@
+{echo:JS::import('dialog?skin=brief');}
+{echo:JS::import('dialogtools');}
+{echo:JS::import('form');}
+{echo:JS::import('validator');}
+<h2 class="page_title">{$node_index['name']}</h2>
+<div class="form2">
+    <form name="config_form" method="post" action="{url:/distribution/config_set}">
+    <dl class="lineD">
+      <dt> 审核是否开启</dt>
+      <dd>
+        <input name="is_review" type="checkbox" value="1"><label>用户申请成为分销商是否需要审核</label>
+      </dd>
+    </dl>
+    <dl class="lineD">
+     <dt>申请门槛：</dt>
+      <dd>
+        <label>是否开启：</label><input name="is_condition" type="checkbox" size=60 value="1">
+        <label>开启后，需要满足下面的条件才可申请成为分销商</label>
+      </dd>
+      <dd>
+        <label>消费满</label> <input name="ammount" class="small" type="text" pattern="int" size=8 value="">
+        <label></label>
+      </dd>
+
+    </dl>
+    <dl class="lineD">
+          <dt>分销商级别：</dt>
+          <dd >
+            <table class="default border" style="width:auto;">
+              <thead id="category_table">
+                <tr class="min_inputs">
+                <td>
+                    <button class="button  new_category" type="button"><b class="icon-plus green"></b>添加新级别</button>
+            </td>
+            {list:items=$config['category']}
+                  <td>
+                    <input class="small" name="category[]" type="text" value="{$item}" onchange="changeCategory(this)" > <button class="button deleteCategory_btn" onclick="deleteCategory(this)" type="button">
+              <b class="icon-close red"></b></button></td>
+                    {/list}
+                </tr>
+              </thead>
+            </table><label>通过分销商的级别，可以针对业绩好的分销商进行不同的设置。</label>
+          </dd>
+        </dl><dl class="lineD">
+          <dt>佣金计算：</dt>
+          <dd >
+            <table class="default border  commission_table" style="width:auto;">
+              <thead>
+                <tr>
+                    <th >分润级别</th>
+                    <th >默认等级（%）</th>
+                    {list:items=$config['category']}
+                    <th ><span>{$item}</span>分销商（%）</th>
+                    {/list}
+                </tr>
+                <tr class="min_inputs">
+                  <td width="60"> 平台预留 </td>
+                  {list:items=$config['reserved']}
+                    <td>
+                      <input class="small" name="reserved[]" type="text" pattern="int" value="{$item}">
+                    </td>
+                  {/list}
+                </tr>
+                <tr class="min_inputs">
+                  <td width="60"> 一级分佣 </td>
+                  {list:items=$config['level1']}
+                  <td>
+                    <input class="small" name="level1[]"  type="text" pattern="int" value="{$item}">
+                  </td>
+                  {/list}
+                </tr>
+                <tr class="min_inputs">
+                  <td> 二级分佣 </td>
+                  {list:items=$config['level2']}
+                <td>
+                    <input class="small" name="level2[]"  type="text" pattern="int" value="{$item}">
+                  </td>
+                  {/list}
+                </tr>
+                <tr class="min_inputs">
+                  <td> 三级分佣 </td>
+                  {list:items=$config['level3']}
+                <td>
+                    <input class="small" name="level3[]"  type="text" pattern="int" value="{$item}">
+                  </td>
+                  {/list}
+                </tr>
+
+              </thead>
+            </table><label>佣金计算说明：佣金的产生是 （商品价实付价格 - 成本价）* 订单各商品的件数，平台预留是指预留出一定的利润，默认为0，其它的将做为佣金发放。</label>
+          </dd>
+        </dl>
+    <dl class="lineD">
+      <dt>结算时长：</dt>
+      <dd>
+        <input name="aftertime" type="text" size=60 value="" pattern="int" class="small"><label>天</label>
+        <label>订单支付完成后，多长时间后，产生的佣金将作为分销商的正式佣金。</label>
+      </dd>
+    </dl>
+
+    <dl class="lineD">
+      <dt>提现条件：</dt>
+      <dd>
+        <label>提现最小金额：</label><input name="withdraw_condition" pattern="int" type="text" size=40 value="" class="small" />
+        <label>金额必需是整数</label>
+      </dd>
+    </dl>
+       <div class="center">
+     {token:key=form}
+      <input type="submit" name="submit" class="button action fn" value="确 定">
+    </div>
+    </form>
+</div>
+<script>
+    {if:isset($message)}
+    art.dialog.tips('<p class="success">{$message}</p>');
+    {/if}
+    var form = new Form('config_form');
+    var data = {echo:JSON::encode($config)};
+    form.init(data);
+
+  $(".select_button").on("click",function(){
+      uploadFile();
+      return false;
+    });
+
+
+
+$('.new_category').on('click',function(){
+  $("#category_table tr").each(function(){
+    var trHtml = '<td><input class="small" name="category[]" type="text"  value="" onchange="changeCategory(this)" > <button class="button deleteCategory_btn" onclick="deleteCategory(this)" type="button"><b class="icon-close red"></b></button></td>"';
+    $(this).append(trHtml);
+  });
+  $('.commission_table tr').each(function(){
+    var trHtml = $(this).find("th:last,td:last").prop("outerHTML");
+    $(this).append(trHtml);
+  })
+});
+
+function changeCategory(id){
+  var num = $('#category_table input[name="category[]"]').index($(id));
+  $('.commission_table th:eq('+(num+2)+')').text($(id).val()+'分销商（%）');
+}
+
+function deleteCategory(id){
+  var num = $('#category_table .deleteCategory_btn').index($(id));
+  $("#category_table tr").each(function(){
+    $(this).find("td").eq(num+1).remove();
+  });
+  $(".commission_table tr").each(function(){
+    $(this).find("td,th").eq(num+2).remove();
+  });
+}
+</script>

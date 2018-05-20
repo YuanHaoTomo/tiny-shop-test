@@ -1,0 +1,41 @@
+{echo:JS::import("form")}
+{echo:JS::import('dialog?skin=tinysimple');}
+{echo:JS::import('dialogtools');}
+<link type="text/css" rel="stylesheet" href="{url:#css/ucenter.css}" />
+<div class="container clearfix">
+    {widget:name=distribution action=menu}
+    <div class="content clearfix uc-content">
+        <h1 class="title"><span>我的业绩：</span></h1>
+        {query:name=widget_distributor}
+{$item['user_id']}</br>
+{/query}
+    </div>
+</div>
+<script type="text/javascript">
+    $("#recharge-btn").on("click",function() {
+        art.dialog({id:'recharge-dialog',title:'在线充值',content:document.getElementById('recharge-dialog'),lock:true});
+    });
+    $("#withdraw-btn").on("click",function() {
+        art.dialog({id:'withdraw-dialog',title:'提现申请',content:document.getElementById('withdraw-dialog'),lock:true});
+    });
+    function close_dialog(e){
+        if(!e)art.dialog({id:'recharge-dialog'}).close();
+    }
+    function submit_withdraw(e){
+        if(!e){
+            var name = $("#w_name").val();
+            var type_name = $("#w_type_name").val();
+            var account = $("#w_account").val();
+            var amount = $("#w_amount").val();
+            $.get("{url:/ucenter/withdraw}",{name:name,type_name:type_name,account:account,amount:amount},function(data){
+                if(data['status']=='success'){
+                    art.dialog({id:'withdraw-dialog'}).close();
+                    window.location.href = "{url:/ucenter/account/rand/}"+Math.random()+"#tab-1";
+                }else{
+                    alert(data['msg']);
+                }
+            },'json');
+        }
+        return false;
+    }
+</script>

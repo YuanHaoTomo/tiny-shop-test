@@ -1,0 +1,32 @@
+<link href="{url:#css/product.css}" rel="stylesheet" type="text/css" />
+<link href="{url:#css/ucenter.css}" rel="stylesheet" type="text/css" />
+<div class="container list blank">
+    <div class="row-5">
+        <div class="col-1">
+            {widget:name=distribution action=menu}
+        </div>
+        <div class="col-4">
+                <h1 class="title">
+            <span>
+                佣金明细记录：
+            </span>
+        </h1>
+                <table class="table table-list">
+                    <tr>
+                        <th> 佣金 </th>
+                        <th> 时间 </th>
+                        <th> 状态
+                        </th>
+                    </tr>
+                    {query:name=widget_distributor_order where= user_id eq $user[id]  order=id desc page=1 id=$obj}
+                    <tr class="">
+                        <td>{$item['commission']}{$currency_unit} </td>
+                        <td> {$item['create_time']} </td>
+                        <td> {if:$item['status']==0}预收入{elseif:$item['status']==1}{elseif:$item['status']==2}已结算{elseif:$item['status']==-1}用户退款，无效{/if} </td>
+                    </tr>
+                    {/query}
+                </table>
+                <div class="page-nav">{!=$obj->pagebar()}</div>
+        </div>
+    </div>
+</div>

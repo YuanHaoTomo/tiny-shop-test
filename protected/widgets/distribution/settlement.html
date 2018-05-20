@@ -1,0 +1,54 @@
+<link href="{url:#css/product.css}" rel="stylesheet" type="text/css" />
+<link href="{url:#css/ucenter.css}" rel="stylesheet" type="text/css" />
+<div class="container list blank">
+    <div class="row-5">
+        <div class="col-1">
+            {widget:name=distribution action=menu}
+        </div>
+        <div class="col-4">
+            <h1 class="title">
+                <span>
+                    佣金结算
+                </span>
+            </h1>
+            <div class="tab">
+                <ul class="tab-head">
+                    <li class="current">结算<i></i></li>
+                    <li>结算纪录<i></i></li>
+                </ul>
+                <div class="tab-body">
+                    <div>
+                        <form action="{url:/distribution/settlement_act}" method="get">
+                            <ul class="tiny-form" style="margin-top: 50px;">
+                                <li class="line"><strong>可提现佣金，可进行结算，结算的佣金将进入【用户中心】账户余额，资金的提现统一在用户中心进行提现。</strong></li>
+                                <li class="line">
+                                    可结算佣金：<span class="text-danger">{$income}</span> {$currency_unit}
+                                </li>
+                                <li class="line tc">
+                                    <input type="submit" class="btn btn-main" value="结算佣金">
+                                </li>
+                            </ul>
+                        </form>
+                    </div>
+                    <div>
+                        <table class="table table-list">
+                            <tr>
+                                <th> 序号 </th>
+                                <th> 结算金额 </th>
+                                <th> 结算时间 </th>
+                            </tr>
+                            {query:name=widget_distributor_settlement_log where=user_id eq $user[id] order=id desc page=1 id=$obj}
+                            <tr class="">
+                                <td>{!=$key+1}</td>
+                                <td>{$item['amount']}{$currency_unit} </td>
+                                <td> {$item['op_time']} </td>
+                            </tr>
+                            {/query}
+                        </table>
+                        <div class="page-nav">{!=$obj->pagebar()}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

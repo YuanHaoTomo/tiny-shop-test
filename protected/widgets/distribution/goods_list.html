@@ -1,0 +1,71 @@
+{echo:JS::import('dialog?skin=tinysimple');} {echo:JS::import('dialogtools');}
+<link href="{url:#css/product.css}" rel="stylesheet" type="text/css" />
+<link href="{url:#css/ucenter.css}" rel="stylesheet" type="text/css" />
+<div class="container list blank">
+    <div class="row-5">
+        <div class="col-1">
+            {widget:name=distribution action=menu}
+        </div>
+        <div class="col-4">
+            <h1 class="title">
+            <span>
+                热销商品推荐：
+            </span>
+        </h1>
+            <div class="row">
+                {query:name=goods where= is_online eq 0 and id in (select goods_id from tiny_order_goods group by goods_id order by count(goods_nums) desc) order=(sell_price-cost_price) desc limit=12}
+                <div class="col-1">
+                    <div class="item">
+                        <div class="header">
+                            <a href="">
+                            <img src="{echo:Common::thumb($item['img'],220,220);}" width="220">
+                          </a>
+                        </div>
+                        <ul class="main">
+                            <li><a href="{url:/index/product/id/$item[id]}">{echo:TString::msubstr($item['name'],0,12)}</a></li>
+                            <li>{!$price=($item['sell_price'] - $item['cost_price'])}分销利润：<span class="price">{!=$price*$min/100}~{!=$price}{$currency_unit}</span></li>
+                        </ul>
+                        <div class="footer">
+                            <a href="javascript:promotionAdd({$item['id']})" class="btn btn-main">我要推广</a>
+                        </div>
+                    </div>
+                </div>
+                {/list}
+            </div>
+            <h1 class="title">
+            <span class="">
+               <strong> 所有商品：</strong>
+            </span>
+        </h1>
+            <div class="row">
+                    {query:name=goods where= is_online eq 0 page=1 pagesize=12 id=$promotion}
+                    <div class="col-1">
+                    <div class="item">
+                        <div class="header">
+                            <a href="">
+                            <img src="{echo:Common::thumb($item['img'],220,220);}" width="220">
+                          </a>
+                        </div>
+                        <ul class="main">
+                            <li><a href="{url:/index/product/id/$item[id]}">{echo:TString::msubstr($item['name'],0,12)}</a></li>
+                            <li>{!$price=($item['sell_price'] - $item['cost_price'])}分销利润：<span class="price">{!=$price*$min/100}~{!=$price}{$currency_unit}</span></li>
+                        </ul>
+                        <div class="footer">
+                            <a href="javascript:promotionAdd({$item['id']})" class="btn btn-main">我要推广</a>
+                        </div>
+                    </div>
+                </div>
+                    {/list}
+
+            </div>
+             <div class="page-nav">{!=$promotion->pageBar()}</div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+function promotionAdd(id) {
+    $.post('{url:/distribution/promotion_add}', { goods_id: id }, function(data) {
+        art.dialog.tips("<div class='" + data['status'] + "'>" + data['msg'] + "</div>");
+    }, 'json');
+}
+</script>

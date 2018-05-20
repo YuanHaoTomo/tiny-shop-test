@@ -1,0 +1,58 @@
+<link type="text/css" rel="stylesheet" href="{url:#css/ucenter.css}" />
+<div class="container list blank">
+    <div class="row-5">
+        <div class="col-1">
+            {widget:name=distribution action=menu}
+        </div>
+        <div class="col-4 ">
+            <h1 class="title"><span>我的下线：</span></h1>
+            <div class="tab">
+                <ul class="tab-head">
+                    <li>一级下线<i></i></li>
+                    <li>二级下线<i></i></li>
+                    <li>三级下线<i></i></li>
+                </ul>
+                <div class="tab-body ucenter">
+                    <div id="levels-1" class="clearfix js-template">
+                        <table class="page-content  table table-list mt20">
+                            <tr class="{odd-even}">
+                                <td>{name}</td>
+                            </tr>
+                        </table>
+                        <div class="page-nav"></div>
+                    </div>
+                    <div id="levels-2" class="js-template clearfix">
+                        <table class="page-content  table table-list mt20">
+                            <tr class="{odd-even}">
+                                <td>{name}</td>
+                            </tr>
+                        </table>
+                        <div class="page-nav"></div>
+                    </div>
+                    <div id="levels-3" class="js-template clearfix">
+                        <table class="page-content  table table-list mt20">
+                            <tr class="{odd-even}">
+                                <td>{name}</td>
+                            </tr>
+                        </table>
+                        <div class="page-nav"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+$("#levels-1").Paging({
+    url: '{url:/distribution/get_levels}',
+    params: { level: '0' }
+});
+$("#levels-2").Paging({
+    url: '{url:/distribution/get_levels}',
+    params: { level: '1' }
+});
+$("#levels-3").Paging({
+    url: '{url:/distribution/get_levels}',
+    params: { level: '2' }
+});
+</script>

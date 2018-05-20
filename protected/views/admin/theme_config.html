@@ -1,0 +1,76 @@
+{echo:JS::import('form');}
+{echo:JS::import('dialog?skin=brief');}
+{echo:JS::import('dialogtools');}
+<div style="padding: 10px;">
+    <h2 class="page_title">
+        主题参数设置
+    </h2>
+    <div class="form2" id="obj_form">
+        <form action="{url:/admin/theme_config_save}" method="post">
+            <input name="theme" type="hidden" value="{$theme}">
+                <div id="expand">
+                </div>
+                <div style="text-align:center;" class="mt10">
+                    <input class="button" type="submit" value="提交">
+                        <input class="button" type="reset" value="重置"/>
+                    </input>
+                </div>
+            </input>
+        </form>
+    </div>
+</div>
+<script type="text/javascript">
+    function initFileds() {
+  var appConfig = {echo: JSON::encode($config)};
+  var str = '';
+  for(i in appConfig){
+    if(appConfig[i]['type']=='text' || appConfig[i]['type']=='textarea'){
+      var pattern_str = ' ';
+      var alt = '';
+      var info = ''
+      if(undefined != appConfig[i]['alt'])alt = appConfig[i]['alt'];
+      if(undefined != appConfig[i]['info'])info = appConfig[i]['info'];
+      if(undefined != appConfig[i]['pattern']) pattern_str = 'pattern ="'+ appConfig[i]['pattern']+'" ';
+      if(appConfig[i]['type'] == 'textarea'){
+        str += '<dl class="lineD"> <dt>'+appConfig[i]['caption']+'：</dt> <dd> <textarea name="theme_'+appConfig[i]['field']+'" type="text" empty '+pattern_str+' alt="'+alt+'"></textarea> <label>'+info+'</label> </dd> </dl>';
+      }else{
+        str += '<dl class="lineD"> <dt>'+appConfig[i]['caption']+'：</dt> <dd> <input name="theme_'+appConfig[i]['field']+'" empty type="text" '+pattern_str+' alt="'+alt+'"> <label>'+info+'</label> </dd> </dl>';
+      }
+    }else{
+      var options = appConfig[i]['options'];
+      options = options.split(',');
+      var option_str = '';
+      if(appConfig[i]['type']=='select'){
+        for(o in options){
+          var option =  options[o];
+          var item = option.split(':');
+          option_str +='<option value="'+item[0]+'">'+item[1]+'</option>';
+        }
+        option_str = '<select name="theme_'+appConfig[i]['field']+'">'+option_str+'</select>';
+      }else if(appConfig[i]['type']=='checkbox'){
+        for(o in options){
+          var option =  options[o];
+          var item = option.split(':');
+          option_str +='<input type="checkbox" name="theme_'+appConfig[i]['field']+'[]" value="'+item[0]+'"><label>'+item[1]+'</label>';
+        }
+
+      }else if(appConfig[i]['type']=='radio'){
+        for(o in options){
+          var option =  options[o];
+          var item = option.split(':');
+          option_str +='<input type="radio" name="theme_'+appConfig[i]['field']+'" value="'+item[0]+'"><label>'+item[1]+'</label>';
+        }
+      }
+      str += '<dl class="lineD"> <dt>'+appConfig[i]['caption']+'：</dt> <dd>'+option_str+' </dd> </dl>';
+    }
+
+  }
+  $("#expand").html(str);
+}
+initFileds();
+var form =  new Form();
+form.init({!=JSON::encode($config_values)});
+{if:Req::args('opstatus')=='success'}
+art.dialog.tips("<p class='success' >保存成功！</p>");
+{/if}
+</script>

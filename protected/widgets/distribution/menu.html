@@ -1,0 +1,23 @@
+{code:}$sidebar = array(
+        '分销中心'=>array(
+            '我的业绩'=>'info',
+            '佣金明细'=>'income',
+            '佣金结算'=>'settlement',
+            '我的下线'=>'users',
+            '优质商品'=>'goods_list',
+            '我的推广'=>'promotion',
+            '推广方式'=>'promotion_type'
+            ),
+
+        );$act=Req::args("act"){/code}
+<link href="{url:@protected/widgets/distribution/common.css}" rel="stylesheet" type="text/css"/>
+<div class="side-menu">
+    <h2 class="header">分销中心</h2>
+        {list:items=$sidebar}
+        <ul class="sub-menu">
+            {list:items=$item item=$v}
+            <li class="menu-item"><a {if:$act==$v}class="current"{/if} href="{url:/distribution/$v}">{$key}<span class="l-triangle"></span></a></li>
+            {/list}
+        </ul>
+        {/list}
+</div>

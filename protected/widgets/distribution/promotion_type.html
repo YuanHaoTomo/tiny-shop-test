@@ -1,0 +1,42 @@
+{echo:JS::import('dialog?skin=tinysimple');} {echo:JS::import('dialogtools');}
+{!$url=Url::fullUrlFormat('/index/index/regcode/'.$distribution['code'])}
+{!$url = urlencode($url)}
+<link href="{url:#css/product.css}" rel="stylesheet" type="text/css" />
+<link href="{url:#css/ucenter.css}" rel="stylesheet" type="text/css" />
+<div class="container list blank">
+    <div class="row-5">
+      <div class="col-1">
+        {widget:name=distribution action=menu}
+        </div>
+        <div class="col-4">
+            <h1 class="title">
+            <span>
+                推广方式：
+            </span>
+        </h1>
+            <table class="table table-list">
+                <tr>
+                    <td>自由推广：</td>
+                    <td>本网站任何一个连接只要添加上参数regcode={$distribution['code']}即可推广</td>
+                </tr>
+                <tr>
+                    <td>商品推广：</td>
+                    <td>我的推广>>点击商品，复制地址拦信息进行推广</td>
+                </tr>
+                <tr>
+                    <td>二维码推广：</td>
+                    <td><img alt="二维码扫码推广" id="q_code" src="{url:/simple/qrcode}?&data={$url}" style="width:150px;height:150px;"/></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+var base_url = "{url:/simple/qrcode}";
+var param = "&data={$url}";
+if(base_url.indexOf('?')!==-1){
+    $("#q_code").attr('src',base_url+param);
+}else{
+    $("#q_code").attr('src', base_url +'?'+ param);
+}
+</script>
